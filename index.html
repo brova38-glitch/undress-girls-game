@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Раздень Девушку — Браузерная Игра</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .selector {
+            margin: 20px 0;
+        }
+        .selector button {
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            margin: 0 10px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .selector button:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+        .selector button.active {
+            background: #4ecdc4;
+        }
+        .game-area {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        #character-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        #character-image:hover {
+            transform: scale(1.02);
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .controls button {
+            background: #4ecdc4;
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            margin: 5px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .controls button:hover {
+            background: #45b7aa;
+            transform: scale(1.05);
+        }
+        .stage-info {
+            font-size: 1.1em;
+            margin: 15px 0;
+            min-height: 1.5em;
+        }
+        .footer {
+            margin-top: 40px;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            .selector button { padding: 12px 20px; margin: 5px; display: block; width: 80%; margin: 10px auto; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Раздень Девушку 🔥</h1>
+    <div class="subtitle">Кликай, чтобы раздевать красивых девушек!</div>
+
+    <div class="selector">
+        <button id="btn-blonde" class="active" onclick="selectGirl('blonde')">Блондинка</button>
+        <button id="btn-brunette" onclick="selectGirl('brunette')">Брюнетка</button>
+    </div>
+
+    <div class="game-area">
+        <div class="stage-info" id="stage-info">Этап 1: Одетая</div>
+        <img id="character-image" src="images/blonde1.jpg" alt="Девушка" onclick="nextStage()">
+        <div class="controls">
+            <button onclick="nextStage()">Раздеть дальше</button>
+            <button onclick="resetStage()">Сбросить</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Только для взрослых 18+. Все изображения сгенерированы ИИ.<br>
+        Открой index.html в браузере, чтобы играть.
+    </div>
+
+    <script>
+        const girls = {
+            blonde: {
+                name: "Блондинка",
+                stages: [
+                    { img: "images/blonde1.jpg", text: "Этап 1: В футболке и джинсах" },
+                    { img: "images/blonde2.jpg", text: "Этап 2: Сняла футболку (в лифчике и джинсах)" },
+                    { img: "images/blonde3.jpg", text: "Этап 3: В белье и кроссовках" }
+                ]
+            },
+            brunette: {
+                name: "Брюнетка",
+                stages: [
+                    { img: "images/brunette1.jpg", text: "Этап 1: В красном платье" },
+                    { img: "images/brunette2.jpg", text: "Этап 2: В красном белье" }
+                ]
+            }
+        };
+
+        let currentGirl = 'blonde';
+        let currentStage = 0;
+
+        function selectGirl(girl) {
+            currentGirl = girl;
+            currentStage = 0;
+            updateUI();
+            document.getElementById('btn-blonde').classList.toggle('active', girl === 'blonde');
+            document.getElementById('btn-brunette').classList.toggle('active', girl === 'brunette');
+        }
+
+        function nextStage() {
+            const girl = girls[currentGirl];
+            if (currentStage < girl.stages.length - 1) {
+                currentStage++;
+                updateUI();
+            } else {
+                document.getElementById('stage-info').textContent = "Полностью раздета! 😈";
+            }
+        }
+
+        function resetStage() {
+            currentStage = 0;
+            updateUI();
+        }
+
+        function updateUI() {
+            const girl = girls[currentGirl];
+            const stage = girl.stages[currentStage];
+            document.getElementById('character-image').src = stage.img;
+            document.getElementById('stage-info').textContent = stage.text;
+        }
+
+        // Init
+        updateUI();
+    </script>
+</body>
+</html>
